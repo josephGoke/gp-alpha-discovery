@@ -59,24 +59,24 @@ const GP_CFG = GPConfig(
     max_depth              = 6,
 
     # Evolution
-    n_generations          = 20,
+    n_generations          = 10,
     elite_count            = 10,
     crossover_prob         = 0.85,
-    mutation_prob          = MutationProbs(0.40, 0.35, 0.15, 0.10),
+    mutation_prob          = MutationProbs(0.40, 0.4, 0.1, 0.10),
 
     # Selection
     selection              = :epsilon_lexicase,
-    tournament_k           = 5,
+    tournament_k           = 3,
     lexicase_epsilon       = 0.05,
     lexicase_n_periods     = 20,
     
     # Constant optimisation
     const_opt_method       = :nelder_mead,
-    const_opt_every_n_gens = 5,
+    const_opt_every_n_gens = 2,
     
     # Fitness
-    parsimony              = 0.001,
-    fitness_weights        = FitnessWeights(0.5, 0.3, 0.1, 0.1),
+    parsimony              = 0.015,
+    fitness_weights        = FitnessWeights(0.2, 0.4, 0.2, 0.2),
 
     # Diversity
     novelty_k              = 10,
@@ -103,7 +103,7 @@ const GP_CFG = GPConfig(
     cs_op_names     = [:cs_rank, :cs_zscore, :cs_scale, :cs_winsorize],
     ts_window_sizes = [3, 5, 10, 20],
 
-    const_prob   = 0.0,
+    const_prob   = 0.05,  # probability of choosing a constant leaf vs feature
     fin_op_prob  = 0.5,
 
     # Execution
@@ -112,10 +112,10 @@ const GP_CFG = GPConfig(
     verbose        = true,
     )
     
-    
+
 
 const TRAIN_FRAC = 1 - GP_CFG.eval_subsample          # fraction of unique dates used for training
-const RETURN_HORIZON = 3                             # how many rows forward the target return looks
+const RETURN_HORIZON = 5                            # how many periods forward the target return looks
 
     # =============================================================================
 # 1. Data loading
@@ -147,7 +147,7 @@ function load_asset_csv(path::String; period::Int=RETURN_HORIZON)
     dates    = collect(df[1:end-period, :open_time])
     features = Matrix{Float64}(df[1:end-period, Not(:open_time)])
     
-    target   = close[(1 + period):end] ./ close[1:end-period] .- 1.0
+    target   = (close[(1 + period):end] ./ close[1:end-period]) ./ close[1:end-period]
     
 
 

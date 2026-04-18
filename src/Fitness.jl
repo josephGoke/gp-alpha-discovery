@@ -132,7 +132,7 @@ A composite metric combining IC and Rank IC, weighted by β.
 Measures the predictive strength of an alpha across time
 A higher PPS indicates stronger alignment between the alpha and subsequent asset returns.
 """
-function pps(factor::Vector{Float64}, y_raw::Vector{Float64}, y_ranked::Vector{Float64}, β::Float64 = 0.5)::Float64
+function pps(factor::Vector{Float64}, y_raw::Vector{Float64}, y_ranked::Vector{Float64}, β::Float64 = 0.3)::Float64
     length(factor) == length(y_ranked) || error("PPS: length mismatch - factor=$(length(factor)), y_ranked=$(length(y_ranked))")
     isempty(factor) && return 0.0
 
